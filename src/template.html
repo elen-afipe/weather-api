@@ -10,16 +10,16 @@
         <header class="header">
             <a href="" class="logo-text" noreferrer>Odin weather</a>
             <div class="github-info">
-                <img src="" class="github-logo">
-                <a href="" class="github-link" noreferrer></a>
+                <img src="./assets/icons/github.svg" class="github-logo">
+                <a href="https://github.com/elen-afipe/weather-api" class="github-link" noreferrer>Gihub</a>
             </div>
         </header>
         <main class="main">
             <div class="search-row">
                 <form class="form">
                     <input type="text" class="search">
-                    <button class="search btn">
-                        <img src="">
+                    <button class="search btn svg">
+                        <img src="./assets/icons/search.svg">
                     </button>
                 </form class="form">
                 <div class="toggle-container">
@@ -27,59 +27,73 @@
                 </div>
             </div>
             <div class="error-text"></div>
-            <div class="today-weather">
-                <section>
-                    <div class="today-row">
-                        <img src="" class="svg">
-                        <h2 class="location"></h2>
-                    </div>  
-                    <div class="today-row">
-                        <p class="temp-now"></p>
-                    </div>
-                    <div class="today-row">
-                        <p class="temp"><span class="temp-max"></span>/<span class="temp-min"></span>, feels like <span class="temp-feel"></span></p>
-                    </div>
-                    <div class="today-row">
-                        <p class="description"></p>
-                    </div>
-                    <div class="today-row">
-                        <div class="weather-details">
-                            <img src="" class="svg">
-                            <p class="wind"></p>
+            <div class="forecast">
+                <div class="today-weather">
+                    <div class="today-block">
+                        <img class="today-image">
+                        <div class="today-content">
+                            <div class="today-row">
+                                <img class="svg location-icon" src="./assets/icons/location.svg">
+                                <h2 class="location"></h2>
+                            </div>
+                            <div class="today-row">
+                                <p class="temp-now"></p>
+                                <img class="today-icon svg">
+                            </div>
+                            <div class="today-row">
+                                <p class="temp"><span class="temp-max"></span>/<span class="temp-min"></span>, feels like <span class="temp-feel"></span></p>
+                            </div>
+                            <div class="today-row">
+                                <p class="description"></p>
+                            </div>
+                            <div class="today-row">
+                                <div class="weather-details">
+                                    <img class="svg" src="./assets/icons/wind.svg">
+                                    <p class="wind"></p>
+                                </div>
+                                <div class="weather-details">
+                                    <img class="svg" src="./assets/icons/uv-index.svg">
+                                    <p class="uv"></p>
+                                </div>
+                                <div class="weather-details">
+                                    <img class="svg" src="./assets/icons/pressure.svg">
+                                    <p class="pressure"></p>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="weather-details">
-                            <img src="" class="svg">
-                            <p class="uv"></p>
-                        </div>
-                        
-                        <div class="weather-details">
-                            <img src="" class="svg">
-                            <p class="pressure"></p>
-                        </div>
                     </div>
-                </section>
-                <div class="sun">
-                    <div class="sunrise-details">
-                        <img src="" class="svg sunrise-pic">
-                        <p class="sunrise"></p>
-                    </div>
-                    <div class="sunset-details">
-                        <img src="" class="svg sunset-pic">
-                        <p class="sunset"></p>
+                    <div class="sun">
+                        <div class="sunrise-details">
+                            <img class="svg sunrise-pic" src="./assets/photos/sunrise.jpg">
+                            <div class="sunrise-content">
+                                <h3 class="sun-text">Sunrise</h3>
+                                <p class="sunrise"></p>
+                            </div>
+                        </div>
+                        <div class="sunset-details">
+                            <img class="svg sunset-pic" src="./assets/photos/sunset.jpg">
+                            <div class="sunset-content">
+                                <h3 class="sun-text">Sunset</h3>
+                                <p class="sunset"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="carousel-container">
+                    <h2 class="weather-header">Hourly forecast</h2>
+                    <div class="today-carousel">
+                        <div class="carousel-items"></div>
+                        <button class="prev btn"><img src="./assets/icons/chevron-left.svg" alt=""></button>
+                        <button class="next btn"><img src="./assets/icons/chevron-right.svg" alt=""></button>
+                    </div>
+                </div>
+                <div class="forecast-container">
+                    <h2 class="weather-header">14 day forecast</h2>
+                    <div class="forecast-block"></div>
+                </div>
             </div>
-
-            <div class="today-carousel">
-                <div class="carousel-items"></div>
-                <button class="prev btn"><img src="" alt=""></button>
-                <button class="next btn"><img src="" alt=""></button>
-            </div>
-
-            <div class="forecast-block"></div>
         </main>
-        <footer class="footer"><a href="" class="credits">Data from weather</a></footer>
+        <footer class="footer"><a href="https://www.visualcrossing.com/weather-data/" class="credits" noreferrer>Data from Visual Crossing</a></footer>
     </div>
 </body>
 </html>

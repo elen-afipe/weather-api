@@ -2,48 +2,43 @@ import dataToReturn from './example.json' assert { type: "json" };
 import {format} from "date-fns"
 import { getLocation } from './DOM.js';
 const linkPart = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
-const keyPart = '?unitGroup=metric&key=3T6PD9Z93CTPRSXWNXQA9QAA3&include=days,hours'
+const keyPart = '?unitGroup=metric&iconSet=icons2&key=3T6PD9Z93CTPRSXWNXQA9QAA3&include=days,hours'
 let errorText;
-
 function getErrorText (){
     return errorText;
 }
 
-// async function getWeatherData(location){
-//     try{
-//             const locationPart = location
-//             console.log(locationPart)
-//             const url = linkPart+locationPart+keyPart
-//             console.log(url)
-//         const response = await fetch(url, {mode: 'cors'});
-//         if (!response.ok) {
-//             throw new Error(response.status);
-//         }
-//         const responseData = await response.json();
-//         console.log(responseData)
-//         return responseData;
-//     } catch (error){
-//         if (Number(error.message)===401){
-//             errorText = `Oops! There is a problem with the API key, account or subscription`
-//             console.log(`Oops! There is a problem with the API key, account or subscription`)
-//         } else if(Number(error.message)<429){
-//             errorText = `Looks like no weather found for this location(`
-//             console.log(`Looks like no weather found for this location(`)
-//         } else if(Number(error.message)===429){
-//             errorText = `Looks like someone exceeded all limits for the search`
-//             console.log(`Looks like someone exceeded all limits for the search`)
-//         } else{
-//             errorText = `Oops! There is a problem with the API provider`
-//             console.log(`Oops! There is a problem with the API provider`)
-//         }
-//             return false
-//     }
-// }
-
-
-async function getWeatherData() {
-   return dataToReturn;
+async function getWeatherData(location){
+    try{
+            const locationPart = location
+            console.log(locationPart)
+            const url = linkPart+locationPart+keyPart
+            console.log(url)
+        const response = await fetch(url, {mode: 'cors'});
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+        const responseData = await response.json();
+        console.log(responseData)
+        return responseData;
+    } catch (error){
+        if (Number(error.message)===401){
+            errorText = `Oops! There is a problem with the API key, account or subscription`
+        } else if(Number(error.message)<429){
+            errorText = `Looks like no weather was found for this location(`
+        } else if(Number(error.message)===429){
+            errorText = `Looks like someone exceeded all limits for the search`
+        } else{
+            errorText = `Oops! There is a problem with the API provider`
+        }
+            return false
+    }
 }
+
+
+// async function getWeatherData() {
+//    return dataToReturn;
+// }
 
 function processToday(weatherData){
     const days = weatherData.days;
@@ -101,6 +96,7 @@ function processForecast(weatherData){
     days.forEach(day => {
         const dayObj = {
         date : day.datetime,
+        icon: day.icon,
         maxTemp : day.tempmax,
         minTemp : day.tempmin,
         windSpeed : day.windspeed,
@@ -111,8 +107,8 @@ function processForecast(weatherData){
     return forecast
 }
 async function processWeatherData(locationToSearch){
-    // const weatherData = await getWeatherData(locationToSearch);
-    const weatherData = await getWeatherData();
+    const weatherData = await getWeatherData(locationToSearch);
+    // const weatherData = await getWeatherData();
     console.log(weatherData)
     if(weatherData){
         const address = weatherData.resolvedAddress;
