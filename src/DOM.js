@@ -158,7 +158,6 @@ async function loadTodayData(data){
 function loadHourlyData(data){
     const hoursData = data.hours;
     carousel.innerHTML="";
-    console.log(hoursData)
     hoursData.forEach(hour =>{
         const hourBlock = document.createElement("div");
         hourBlock.classList.add("hour-block");
@@ -244,10 +243,8 @@ async function processClick(){
         localStorage.setItem("location", locationToSearch);
         errorTextDiv.textContent="";
         errorTextDiv.appendChild(loading)
-        console.log(locationToSearch)
         data = await processWeatherData(locationToSearch);
         if (data){
-        console.log(data)
         errorTextDiv.removeChild(loading);
         errorTextDiv.textContent = "";
         forecastContainer.classList.remove("hidden");
@@ -309,7 +306,6 @@ data = await processWeatherData(locationToSearch);
         errorTextDiv.appendChild(loading)
         if (data){
         errorTextDiv.removeChild(loading);
-        console.log(data)
         errorTextDiv.textContent = "";
         forecastContainer.classList.remove("hidden");
         await loadTodayData(data);
@@ -320,6 +316,3 @@ data = await processWeatherData(locationToSearch);
             forecastContainer.classList.add("hidden");
             errorTextDiv.textContent = errorText
         }
-
-
-export {getLocation}

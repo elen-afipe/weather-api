@@ -1,9 +1,8 @@
-import dataToReturn from './example.json' assert { type: "json" };
 import {format} from "date-fns"
-import { getLocation } from './DOM.js';
 const linkPart = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'
 const keyPart = '?unitGroup=metric&iconSet=icons2&key=3T6PD9Z93CTPRSXWNXQA9QAA3&include=days,hours'
 let errorText;
+
 function getErrorText (){
     return errorText;
 }
@@ -11,15 +10,12 @@ function getErrorText (){
 async function getWeatherData(location){
     try{
             const locationPart = location
-            console.log(locationPart)
             const url = linkPart+locationPart+keyPart
-            console.log(url)
         const response = await fetch(url, {mode: 'cors'});
         if (!response.ok) {
             throw new Error(response.status);
         }
         const responseData = await response.json();
-        console.log(responseData)
         return responseData;
     } catch (error){
         if (Number(error.message)===401){
@@ -34,11 +30,6 @@ async function getWeatherData(location){
             return false
     }
 }
-
-
-// async function getWeatherData() {
-//    return dataToReturn;
-// }
 
 function processToday(weatherData){
     const days = weatherData.days;
@@ -63,7 +54,6 @@ function processHours(weatherData){
     const todayDateTime = new Date();
     const timeNow = format(todayDateTime, 'HH:mm:ss');
     const todayHours = weatherData.days[1].hours
-    console.log(todayHours)
     const tomorrowHours = weatherData.days[2].hours
     const hours = []
         todayHours.forEach(hour =>{
@@ -91,7 +81,6 @@ function processHours(weatherData){
 
 function processForecast(weatherData){
     const days = weatherData.days.splice(1);
-    console.log(days)
     const forecast = [];
     days.forEach(day => {
         const dayObj = {
@@ -100,7 +89,6 @@ function processForecast(weatherData){
         maxTemp : day.tempmax,
         minTemp : day.tempmin,
         windSpeed : day.windspeed,
-        icon : day.icon
         }
         forecast.push(dayObj)
       });
@@ -108,17 +96,11 @@ function processForecast(weatherData){
 }
 async function processWeatherData(locationToSearch){
     const weatherData = await getWeatherData(locationToSearch);
-    // const weatherData = await getWeatherData();
-    console.log(weatherData)
     if(weatherData){
         const address = weatherData.resolvedAddress;
-        console.log(address)
         const today = processToday(weatherData);
-        console.log(today)
         const hours = processHours(weatherData);
-        console.log(hours)
         const forecast = processForecast(weatherData); 
-        console.log(forecast)
         const weather = {
             address, today, hours, forecast
         }
