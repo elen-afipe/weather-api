@@ -74,7 +74,8 @@ body{
     justify-content: space-between;
 }
 .logo-text{
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 .github-info{
     display: flex;
@@ -179,11 +180,13 @@ body{
 
 .error-text{
     align-self: center;
-    height: 1.2rem;
+    min-height: 1.2rem;
+    margin-bottom: 10px;
 }
 
 .today-weather{
     display: flex;
+    flex-wrap: wrap;
     gap:5px;
     justify-content: center;
     align-items: center;
@@ -437,3 +440,13 @@ body{
     align-items: center;
     justify-content: space-between;
 }
+.loader {
+    width: 50px;
+    height: 10px;
+    aspect-ratio: 4;
+    background: radial-gradient(circle closest-side,#000 90%,#0000) 0/calc(100%/3) 100% space;
+    clip-path: inset(0 100% 0 0);
+    animation: l1 0.5s steps(4) infinite;
+  }
+  @keyframes l1 {to{clip-path: inset(0 -34% 0 0)}}
+  

@@ -4,23 +4,15 @@ import WindSVG from "./assets/icons/wind.svg";
 import "./carousel.js"
 
 import SNOW from './assets/weather-icons/SNOW.svg';
-import SNOW0 from './assets/weather-icons/SNOW0.svg';
-import SNOW1 from './assets/weather-icons/SNOW1.svg';
 import TSTORM from './assets/weather-icons/TSTORM.svg';
 import TSHOWER0 from './assets/weather-icons/TSHOWER0.svg';
 import TSHOWER1 from './assets/weather-icons/TSHOWER1.svg';
 import RAIN from './assets/weather-icons/RAIN.svg';
-import RAIN0 from './assets/weather-icons/RAIN0.svg';
-import RAIN1 from './assets/weather-icons/RAIN1.svg';
 import SHOWER0 from './assets/weather-icons/SHOWER0.svg';
 import SHOWER1 from './assets/weather-icons/SHOWER1.svg';
 import FOG from './assets/weather-icons/FOG.svg';
-import FOG0 from './assets/weather-icons/FOG0.svg';
-import FOG1 from './assets/weather-icons/FOG1.svg';
 import WINDY from './assets/weather-icons/WINDY.svg';
 import MCLOUDY from './assets/weather-icons/MCLOUDY.svg';
-import MCLOUDY0 from './assets/weather-icons/MCLOUDY0.svg';
-import MCLOUDY1 from './assets/weather-icons/MCLOUDY1.svg';
 import PCLOUDY0 from './assets/weather-icons/PCLOUDY0.svg';
 import PCLOUDY1 from './assets/weather-icons/PCLOUDY1.svg';
 import CLEAR0 from './assets/weather-icons/CLEAR0.svg';
@@ -29,22 +21,6 @@ import LSNOW0 from './assets/weather-icons/LSNOW0.svg';
 import LSNOW1 from './assets/weather-icons/LSNOW1.svg';
 import UNKNOWN from './assets/weather-icons/UNKNOWN.svg';
 
-import SNOW_IMG from './assets/photos/snow.jpg';
-import SNOW_SHOWERS_DAY from './assets/photos/snow-showers-d.jpg';
-import SNOW_SHOWERS_NIGHT from './assets/photos/snow-showers-n.jpg';
-import THUNDER_RAIN from './assets/photos/thunder-rain.jpg';
-import THUNDER_SHOWERS_DAY from './assets/photos/thunder-showers-d.jpg';
-import THUNDER_SHOWERS_NIGHT from './assets/photos/thunder-showers-n.jpg';
-import RAIN_IMG from './assets/photos/rain.jpg';
-import SHOWERS_DAY from './assets/photos/showers-d.jpg';
-import SHOWERS_NIGHT from './assets/photos/showers-n.jpg';
-import FOG_IMG from './assets/photos/fog.jpg';
-import WIND_IMG from './assets/photos/wind.jpg';
-import CLOUDY_IMG from './assets/photos/cloudy.jpg';
-import PARTLY_CLOUDY_DAY from './assets/photos/partly-cloudy-d.jpg';
-import PARTLY_CLOUDY_NIGHT from './assets/photos/partly-cloudy-n.jpg';
-import CLEAR_DAY from './assets/photos/clear-d.jpg';
-import CLEAR_NIGHT from './assets/photos/clear-sky-n.jpg';
 import DEFAULT_IMG from './assets/photos/cloudy.jpg';
 
 
@@ -77,8 +53,12 @@ const carousel = document.querySelector(".carousel-items");
 const forecastBlock = document.querySelector(".forecast-block");
 forecastContainer.classList.add("hidden");
 
+const loading = document.createElement("div");
+loading.classList.add("loader");
+
 let units = "C";
 let data = false;
+let locationToSearch;
 
 function formatTemp(temp){
     return Math.round(temp) + "°"
@@ -128,32 +108,39 @@ function getWeatherIcon(iconData) {
     return iconMap[iconData] || UNKNOWN;
   }
 
-  function getWeatherPhotoPath(iconData) {
+  async function getWeatherPhoto(iconData) {
     const iconToPhotoMap = {
-      'snow': SNOW_IMG,
-      'snow-showers-day': SNOW_SHOWERS_DAY,
-      'snow-showers-night': SNOW_SHOWERS_NIGHT,
-      'thunder-rain': THUNDER_RAIN,
-      'thunder-showers-day': THUNDER_SHOWERS_DAY,
-      'thunder-showers-night': THUNDER_SHOWERS_NIGHT,
-      'rain': RAIN_IMG,
-      'showers-day': SHOWERS_DAY,
-      'showers-night': SHOWERS_NIGHT,
-      'fog': FOG_IMG,
-      'wind': WIND_IMG,
-      'cloudy': CLOUDY_IMG,
-      'partly-cloudy-day': PARTLY_CLOUDY_DAY,
-      'partly-cloudy-night': PARTLY_CLOUDY_NIGHT,
-      'clear-day': CLEAR_DAY,
-      'clear-night': CLEAR_NIGHT
+    'snow': 'snow.jpg',
+    'snow-showers-day': 'snow-showers-d.jpg',
+    'snow-showers-night': 'snow-showers-n.jpg',
+    'thunder-rain': 'thunder-rain.jpg',
+    'thunder-showers-day': 'thunder-showers-d.jpg',
+    'thunder-showers-night': 'thunder-showers-n.jpg',
+    'rain': 'rain.jpg',
+    'showers-day': 'showers-d.jpg',
+    'showers-night': 'showers-n.jpg',
+    'fog': 'fog.jpg',
+    'wind': 'wind.jpg',
+    'cloudy': 'cloudy.jpg',
+    'partly-cloudy-day': 'partly-cloudy-d.jpg',
+    'partly-cloudy-night': 'partly-cloudy-n.jpg',
+    'clear-day': 'clear-d.jpg',
+    'clear-night': 'clear-sky-n.jpg'
     };
-    return iconToPhotoMap[iconData] || DEFAULT_IMG;
-  }
+    const filePath = iconToPhotoMap[iconData];
+    try {
+        const module = await import(/* webpackChunkName: "weather-photo" */ `./assets/photos/${filePath}`);
+        return module.default;
+      } catch (error) {
+        console.error(`Failed to load image for ${iconData}:`, error);
+        return DEFAULT_IMG; 
+      }
+    }
   
 
-function loadTodayData(data){
+async function loadTodayData(data){
     const todayData = data.today;
-    todayImg.src=getWeatherPhotoPath(todayData.icon);
+    todayImg.src= await getWeatherPhoto(todayData.icon);
     todayIcon.src=getWeatherIcon(todayData.icon);
     const locationData = data.address;
     location.textContent=locationData;
@@ -252,16 +239,19 @@ function getLocation(){
 }
 
 async function processClick(){
-    // const locationToSearch = true;
     const locationToSearch = getLocation();
     if(locationToSearch!==""){  
+        localStorage.setItem("location", locationToSearch);
+        errorTextDiv.textContent="";
+        errorTextDiv.appendChild(loading)
         console.log(locationToSearch)
         data = await processWeatherData(locationToSearch);
         if (data){
         console.log(data)
+        errorTextDiv.removeChild(loading);
         errorTextDiv.textContent = "";
         forecastContainer.classList.remove("hidden");
-        loadTodayData(data);
+        await loadTodayData(data);
         loadHourlyData(data);
         loadForecast(data);
         } else {
@@ -287,4 +277,49 @@ toggleContainer.addEventListener("click", ()=>{
     changeUnits();
     updateUnitValues(data);
 }) 
+
+function storageAvailable(type) {
+    let storage;
+    try {
+      storage = window[type];
+      const x = "__storage_test__";
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return true;
+    } catch (e) {
+      return (
+        e instanceof DOMException &&
+        e.name === "QuotaExceededError" &&
+        storage &&
+        storage.length !== 0
+      );
+    }
+  }
+
+if(storageAvailable("localStorage")){
+    locationToSearch = localStorage.getItem("location", locationToSearch);
+    if(locationToSearch === null){
+        locationToSearch = "london"
+        localStorage.setItem("location", locationToSearch);
+    }
+}else{
+    locationToSearch = "london"
+}
+data = await processWeatherData(locationToSearch);
+        errorTextDiv.appendChild(loading)
+        if (data){
+        errorTextDiv.removeChild(loading);
+        console.log(data)
+        errorTextDiv.textContent = "";
+        forecastContainer.classList.remove("hidden");
+        await loadTodayData(data);
+        loadHourlyData(data);
+        loadForecast(data);
+        } else {
+            const errorText = getErrorText();
+            forecastContainer.classList.add("hidden");
+            errorTextDiv.textContent = errorText
+        }
+
+
 export {getLocation}
